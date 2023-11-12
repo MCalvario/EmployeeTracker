@@ -9,7 +9,7 @@ To use the application, first start the application.  You will be presented with
 When you choose to add a department, you will then be prompted to enter the name of the department and that department is added to the database.  When you choose to add a role, then you will be prompted to enter the name, salary, and department for the role and that role is added to the database.  When you choose to add an employee, you will be prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database.  When you choose to update an employee role, then you will be prompted to select an employee to update and their new role and this information is updated in the database
 
 # Live Site Application
-[Link to Live Site]<br>
+[Link to Live Site]https://mcalvario.github.io/EmployeeTracker/<br>
 [Screenshot of application]
 
 # Credits
