@@ -30,32 +30,32 @@ function init() {
       ]
     },
   ])
-  .then((answer) => {
-    console.log(answer);
-    const { startMenu } = answer;
-    console.log(startMenu);
-    if (startMenu === "View all departments") {
-      viewDepartments();
-    }
-    if (startMenu === "View all roles") {
-      viewRoles();
-    }
-    if (startMenu === "View all employees") {
+  .then((response) => {
+    console.log(response);
+    const { startHere } = response;
+    console.log(startHere);
+    if (startHere === "View all employees") {
       viewEmployees();
     }
-    if (startMenu === "Add a department") {
-      AddDepartment();
-    }
-    if (startMenu === "Add a role") {
-      addRole();
-    }
-    if (startMenu === "Add an employee") {
+    if (startHere === "Add Employee") {
       addEmployee();
     }
-    if (startMenu === "Update and employee role") {
+    if (startHere === "Update employee role") {
       updateEmployee();
     }
-    if (startMenu === "Quit") {
+    if (startHere === "View all Roles") {
+      viewRoles();
+    }
+    if (startHere === "Add a role") {
+      addRole();
+    }
+    if (startHere === "View all departments") {
+      viewDepartments();
+    }
+    if (startHere === "Add a department") {
+      addDepartment();
+    }
+    if (startHere === "Quit") {
       db.quit();
     }
   });  
@@ -103,9 +103,9 @@ function init() {
       message: "What is the name of the new department", 
     },
    ])
-   .then((answer)) => {
+   .then((response)) => {
     db.query{
-      'INSERT INTO department (name) VALUES ("${answer.newDepartment}")',
+      'INSERT INTO department (name) VALUES ("${response.newDepartment}")',
       function (err, employee) {
         if (err) {
           console.log(err);
@@ -145,16 +145,16 @@ function init() {
           type: "list", 
           name: "departmentID",
           message: "What is the department of the new role?",
-          choices: [departments]
+          choices: departments,
         },
       ],
-      .then((res) => {
+      .then((response) => {
         db.query(
           'INSERT INTO role SET ?',
           {
-            title: res.newRole,
-            salary: res.salary, 
-            department_id: res.department_ID,
+            title: response.newRole,
+            salary: response.salary, 
+            department_id: response.department_ID,
           },
           (err, employee) => {
             if (err) {
@@ -197,14 +197,14 @@ function init() {
               choices: roles,
           },
           ])
-          .then((res) => {
+          .then((response) => {
             db.query(
               "SELECT first_name, last_name, id FROM employee",
               (err, managers) => {
                 if (err) {
                   console.log(err);
                 }
-                const newEmployeeInfo = res;
+                const newEmployeeInfo = response;
                 var managers = managers.map((managerID) => {
                   return {
                     name: managerID.first_name + " " + managerID.last_name,
@@ -220,14 +220,14 @@ function init() {
                     choices: managers,
                   },
                 ])
-                .then((rest) => {
+                .then((response) => {
                   db.query(
                     'INSERT INTO employee SET ?',
                     {
                       first_name: newEmployeeInfo.firstName,
                       last_name: newEmployeeInfo.lastName,
                       role_id: newEmployeeInfo.roleID,
-                      manager_id: res.managerID,
+                      manager_id: response.managerID,
                     },
                     (err, employee) => {
                       if (err) {
@@ -278,9 +278,9 @@ function init() {
                     choices: roles,
                   },
                 ])
-                .then((res) => {
+                .then((response => {
                   db.query(
-                    'UPDATE employee SET role_id = $(res.roleID} WHERE id = ${res.employeeID}',
+                    'UPDATE employee SET role_id = $(response.roleID} WHERE id = ${response.employeeID}',
                     (err, employee) => {
                       if (err) {
                         console.log(err);

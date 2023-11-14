@@ -24,3 +24,4 @@ CREATE TABLE employee (
     role_id INT NOT NULL,
     manager_id INT,
 	CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES DEPARTMENT(id) ON DELETE CASCADE
+);
