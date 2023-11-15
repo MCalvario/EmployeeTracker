@@ -1,13 +1,13 @@
 USE employeeTracker_db;
 
---department Table
+--Create table for department
 INSERT INTO department (name) VALUES
 ('Sales'),
 ('Engineering'),
 ('Finance'),
 ('Legal');
 
---roles table
+--Create table for roles
 INSERT INTO role (title, salary, department_id) VALUES
 ('Sales Lead', 100000, 1), 
 ('Salesperson', 80000, 1), 
@@ -18,7 +18,7 @@ INSERT INTO role (title, salary, department_id) VALUES
 ('Legal Team Lead', 25000, 4), 
 ('Lawyer', 190000, 4);
 
---employees table
+--Create table for employees
 INSERT INTO employee (first_name, last_name, role_id) VALUES
 ('John', 'Doe', 1), 
 ('Mike', 'Chan', 2),

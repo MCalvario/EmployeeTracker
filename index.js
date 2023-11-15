@@ -1,15 +1,23 @@
 const inquirer = require('inquirer');
+const express = require('express');
 const mysql = require('mysql2');
 
-const db = mysql.createConnection(
-  {
+const db = mysql.createConnection({
     host: "localhost", 
     user: "root",
     database: "employeeTracker_db", 
     password: "Seth122809!!",
-  },
+  }),
   console.log("Connected to the employee_db database.")
 );
+
+db.connect((err) => {
+  if (err) {
+    console.error('Error connecting to database.', err);
+    return;
+  }
+  console.log('Connected to the employee_db database.');
+});
 
 function init() {
   return inquirer
@@ -17,7 +25,7 @@ function init() {
     {
       type: 'list',
       message: 'What would you like to do?',
-      name: 'Start',
+      name: 'startHere',
       choices: [
         'View All Employees',
         'Add Employee', 
@@ -27,39 +35,40 @@ function init() {
         'View All Departments', 
         'Add Department', 
         'Quit'
-      ]
+      ],
     },
   ])
   .then((response) => {
     console.log(response);
-    const { startHere } = response;
-    console.log(startHere);
-    if (startHere === "View all employees") {
+    const { Start } = response;
+    console.log(Start);
+    if (Start === "View All Employees") {
       viewEmployees();
     }
-    if (startHere === "Add Employee") {
+    if (Start === "Add Employee") {
       addEmployee();
     }
-    if (startHere === "Update employee role") {
+    if (Start === "Update employee role") {
       updateEmployee();
     }
-    if (startHere === "View all Roles") {
+    if (Start === "View all Roles") {
       viewRoles();
     }
-    if (startHere === "Add a role") {
+    if (Start === "Add Role") {
       addRole();
     }
-    if (startHere === "View all departments") {
+    if (Start === "View all departments") {
       viewDepartments();
     }
-    if (startHere === "Add a department") {
+    if (Start === "Add a department") {
       addDepartment();
     }
-    if (startHere === "Quit") {
-      db.quit();
+    if (Start === "Quit") {
+      db.end();
     }
   });  
-  }
+}
+
   init();
   const viewDepartments = () => {
     db.query("SELECT * FROM department", function (err, employee) {
@@ -94,7 +103,7 @@ function init() {
   };
 
   init();
-  const addDepartments = () => {
+  const addDepartment = () => {
    inquirer
    .prompt([
     {
@@ -103,23 +112,23 @@ function init() {
       message: "What is the name of the new department", 
     },
    ])
-   .then((response)) => {
-    db.query{
+  .then((response) => {
+    db.query(
       'INSERT INTO department (name) VALUES ("${response.newDepartment}")',
-      function (err, employee) {
+      (err, employee) => {
         if (err) {
           console.log(err);
         }
         console.log("New department added!");
         init();
         }
-      );
-    });
+      };
+  });
   };
 
 
   const addRole = () => {
-    db.query("SELECT * FROM department", (err, employee) => {
+    db.query("SELECT * FROM department", (err, employee)) => {
       if (err) {
         console.log(err);
       }
@@ -130,31 +139,31 @@ function init() {
         };
       });
       inquirer
-      .prompt ([
+      .prompt([
         {
           type: "input", 
           name: "newRole",
           message: "What is the name of the new role?",
-        }
+        },
         {
           type: "input", 
           name: "salary",
           message: "What is the salary of the new role?",
-        }
+        },
         {
           type: "list", 
           name: "departmentID",
           message: "What is the department of the new role?",
           choices: departments,
         },
-      ],
+      ])
       .then((response) => {
         db.query(
           'INSERT INTO role SET ?',
           {
             title: response.newRole,
             salary: response.salary, 
-            department_id: response.department_ID,
+            department_id: response.departmentID,
           },
           (err, employee) => {
             if (err) {
@@ -166,7 +175,7 @@ function init() {
           }
         );
         });
-      });
+      };
     };
 
     const addEmployee = () => {
@@ -181,21 +190,23 @@ function init() {
           };
           });
           inquirer
-          .prompt([
+          .prompt ([
             {
               type: "input",
               name: "firstName",
               message: "What is the first name of the new employee?",
             },
+            {
               type: "input",
-              name: "LastName",
+              name: "lastName",
               message: "What is the last name of the new employee?",
             },
+            {
               type: "list",
               name: "roleID",
               message: "What is the role of the new employee?",
               choices: roles,
-          },
+            },
           ])
           .then((response) => {
             db.query(
@@ -236,14 +247,16 @@ function init() {
                         console.log("New employee added!");
                         init();
                       }
-                      }
-                  );
-                    });
-                }
-            );
-          });
-        });
-      };
+                    }
+                };
+             });
+            )
+               
+        };
+     });
+   };
+  };
+
     
 
       const updateEmployee = () => {
@@ -253,18 +266,12 @@ function init() {
           }
           var employees = employee.map((employeeID) => {
             return {
-              name: employeeID.first_name + " " + employeeID => {
-                if (err) {
-                  console.log(err);
-                }
-                var roles = employee.map((roleID) => }
-                return {
-                  name: roleID.title,
-                  value: roleID.id,
-                };
-                });
-                inquirer
-                .prompt([
+              name: employeeID.first_name + " " + employeeID.last_name,
+              value: employeeID.id,
+            };
+          });
+          inquirer
+           .prompt([
                   {
                     type: "list", 
                     name: "employeeID",
@@ -288,10 +295,15 @@ function init() {
                         console.log("Employee role updated!");
                         init();
                       }
-                      }
+                    }
                   );
                 });
-          });
-        });
-      };
+              });
+            };
+          };
+
+          init();
+            
+
+      
   
